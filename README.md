@@ -16,7 +16,7 @@ import {
   ENS,
   ENSRegistry,
   ENSRegistryWithFallback,
-  ETHRegistrarController,
+  ARBRegistrarController,
   FIFSRegistrar,
   LinearPremiumPriceOracle,
   PriceOracle,
@@ -41,7 +41,7 @@ import '@ensdomains/ens-contracts/contracts/registry/TestRegistrar.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrar.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrarImplementation.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/BulkRenewal.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/ETHRegistrarController.sol';
+import '@ensdomains/ens-contracts/contracts/ethregistrar/ARBRegistrarController.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/LinearPremiumPriceOracle.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/PriceOracle.sol';
 import '@ensdomains/ens-contracts/contracts/ethregistrar/StablePriceOracle.sol';
@@ -89,7 +89,7 @@ Implementation of the `.test` registrar facilitates easy testing of ENS on the E
 
 ## EthRegistrar
 
-Implements an [ENS](https://ens.domains/) registrar intended for the .pls TLD.
+Implements an [ENS](https://ens.domains/) registrar intended for the .arb TLD.
 
 These contracts were audited by ConsenSys dilligence; the audit report is available [here](https://github.com/ConsenSys/ens-audit-report-2019-02).
 

@@ -39,15 +39,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ],
     log: true,
   }
-  const controller = await ethers.getContract('ETHRegistrarController', deployer)
-  // await deploy('ETHRegistrarController', deployArgs)
+  await deploy('ARBRegistrarController', deployArgs)
+
+  const controller = await ethers.getContract('ARBRegistrarController', deployer)
   if (!controller.newlyDeployed) return
 
   if (owner !== deployer) {
-    const c = await ethers.getContract('ETHRegistrarController', deployer)
+    const c = await ethers.getContract('ARBRegistrarController', deployer)
     const tx = await c.transferOwnership(owner)
     console.log(
-      `Transferring ownership of ETHRegistrarController to ${owner} (tx: ${tx.hash})...`,
+      `Transferring ownership of ARBRegistrarController to ${owner} (tx: ${tx.hash})...`,
     )
     await tx.wait()
   }
@@ -62,29 +63,29 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   )
   const tx1 = await nameWrapper.setController(controller.address, true)
   console.log(
-    `Adding ETHRegistrarController as a controller of NameWrapper (tx: ${tx1.hash})...`,
+    `Adding ARBRegistrarController as a controller of NameWrapper (tx: ${tx1.hash})...`,
   )
   await tx1.wait()
 
   const tx2 = await reverseRegistrar.setController(controller.address, true)
   console.log(
-    `Adding ETHRegistrarController as a controller of ReverseRegistrar (tx: ${tx2.hash})...`,
+    `Adding ARBRegistrarController as a controller of ReverseRegistrar (tx: ${tx2.hash})...`,
   )
   await tx2.wait()
 
-  const artifact = await deployments.getArtifact('IETHRegistrarController')
+  const artifact = await deployments.getArtifact('IARBRegistrarController')
   const interfaceId = computeInterfaceId(new Interface(artifact.abi))
   const provider = new ethers.providers.StaticJsonRpcProvider(
     ethers.provider.connection.url,
     {
       ...ethers.provider.network,
-      ansAddress: (await ethers.getContract('ANSRegistry')).address,
+      ensAddress: (await ethers.getContract('ANSRegistry')).address,
     },
   )
-  const resolver = await provider.getResolver('pls')
+  const resolver = await provider.getResolver('arb')
   if (resolver === null) {
     console.log(
-      'No resolver set for .pls; not setting interface for ETH Registrar Controller',
+      'No resolver set for .arb; not setting interface for ETH Registrar Controller',
     )
     return
   }
@@ -93,17 +94,17 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     resolver.address,
   )
   const tx3 = await resolverContract.setInterface(
-    ethers.utils.namehash('pls'),
+    ethers.utils.namehash('arb'),
     interfaceId,
     controller.address,
   )
   console.log(
-    `Setting ETHRegistrarController interface ID ${interfaceId} on .pls resolver (tx: ${tx3.hash})...`,
+    `Setting ARBRegistrarController interface ID ${interfaceId} on .arb resolver (tx: ${tx3.hash})...`,
   )
   await tx3.wait()
 }
 
-func.tags = ['ethregistrar', 'ETHRegistrarController']
+func.tags = ['arbregistrar', 'ARBRegistrarController']
 func.dependencies = [
   'ANSRegistry',
   'BaseRegistrarImplementation',

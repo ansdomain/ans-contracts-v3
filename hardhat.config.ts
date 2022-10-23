@@ -2,6 +2,7 @@ import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-solhint'
 import '@nomiclabs/hardhat-truffle5'
 import '@nomiclabs/hardhat-waffle'
+import "@nomiclabs/hardhat-etherscan";
 import { exec as _exec } from 'child_process'
 import dotenv from 'dotenv'
 import { existsSync } from 'fs'
@@ -162,6 +163,15 @@ const config: HardhatUserConfig = {
       },
       gasPrice:4000000000,
       gas: 27000000,
+    },
+    arbitrumGoerli: {
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: 421613,
+      accounts: {
+        mnemonic: "bind exact struggle mushroom danger shove note rent glance alone learn wagon"
+      },
+      gasPrice:4000000000,
+      gas: 27000000,
     }
   },
   mocha: {},
@@ -209,6 +219,19 @@ const config: HardhatUserConfig = {
         artifacts: [archivedDeploymentPath],
       },
     ],
+  },
+  etherscan: {
+    apiKey: "ZXR4AG3JVMGXJ4DCC2A2YQJQDZD1U6XWJR",
+    customChains: [
+      {
+        network: "arbitrumGoerli",
+        chainId: 421613,
+        urls: {
+          apiURL: "https://api-goerli.arbiscan.io/api",
+          browserURL: "https://goerli.arbiscan.io/"
+        }
+      }
+    ]
   },
 }
 

@@ -29,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   // Only attempt to make controller etc changes directly on testnets
-  if (network.name === 'pulsechain') return
+  if (network.name === 'arbitrumGoerli') return
 
   const root = await ethers.getContract('Root')
 

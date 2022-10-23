@@ -1,4 +1,4 @@
-const FIFSRegistrar = artifacts.require('./ethregistrar/FIFSRegistrar.sol');
+const FIFSRegistrar = artifacts.require('./arbregistrar/FIFSRegistrar.sol');
 const ENS = artifacts.require('./registry/ENSRegistry.sol');
 
 const { exceptions } = require("../test-utils");
@@ -17,24 +17,24 @@ contract('FIFSRegistrar', function (accounts) {
     });
 
     it('should allow registration of names', async () => {
-        await registrar.register(sha3('pls'), accounts[0], {from: accounts[0]});
+        await registrar.register(sha3('arb'), accounts[0], {from: accounts[0]});
         assert.equal(await ens.owner('0x0'), registrar.address);
-        assert.equal(await ens.owner(namehash.hash('pls')), accounts[0]);
+        assert.equal(await ens.owner(namehash.hash('arb')), accounts[0]);
     });
 
     describe('transferring names', async () => {
 
         beforeEach(async () => {
-            await registrar.register(sha3('pls'), accounts[0], {from: accounts[0]});
+            await registrar.register(sha3('arb'), accounts[0], {from: accounts[0]});
         });
 
         it('should allow transferring name to your own', async () => {
-            await registrar.register(sha3('pls'), accounts[1], {from: accounts[0]});
-            assert.equal(await ens.owner(namehash.hash('pls')), accounts[1]);
+            await registrar.register(sha3('arb'), accounts[1], {from: accounts[0]});
+            assert.equal(await ens.owner(namehash.hash('arb')), accounts[1]);
         });
 
         it('forbids transferring the name you do not own', async () => {
-            await exceptions.expectFailure(registrar.register(sha3('pls'), accounts[1], {from: accounts[1]}));
+            await exceptions.expectFailure(registrar.register(sha3('arb'), accounts[1], {from: accounts[1]}));
         });
     });
 });

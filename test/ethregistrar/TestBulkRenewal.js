@@ -1,7 +1,7 @@
 const ENS = artifacts.require('./registry/ENSRegistry')
 const PublicResolver = artifacts.require('./resolvers/PublicResolver')
 const BaseRegistrar = artifacts.require('./BaseRegistrarImplementation')
-const ETHRegistrarController = artifacts.require('./ETHRegistrarController')
+const ARBRegistrarController = artifacts.require('./ARBRegistrarController')
 const DummyOracle = artifacts.require('./DummyOracle')
 const StablePriceOracle = artifacts.require('./StablePriceOracle')
 const BulkRenewal = artifacts.require('./BulkRenewal')
@@ -12,8 +12,8 @@ const sha3 = require('web3-utils').sha3
 const toBN = require('web3-utils').toBN
 const { exceptions } = require('../test-utils')
 
-const ETH_LABEL = sha3('pls')
-const ETH_NAMEHASH = namehash.hash('pls')
+const ETH_LABEL = sha3('arb')
+const ETH_NAMEHASH = namehash.hash('arb')
 
 contract('BulkRenewal', function(accounts) {
   let ens
@@ -32,7 +32,7 @@ contract('BulkRenewal', function(accounts) {
     // Create a registry
     ens = await ENS.new()
     // Create a base registrar
-    baseRegistrar = await BaseRegistrar.new(ens.address, namehash.hash('pls'), {
+    baseRegistrar = await BaseRegistrar.new(ens.address, namehash.hash('arb'), {
       from: ownerAccount,
     })
 
@@ -58,7 +58,7 @@ contract('BulkRenewal', function(accounts) {
       2,
       1,
     ])
-    controller = await ETHRegistrarController.new(
+    controller = await ARBRegistrarController.new(
       baseRegistrar.address,
       priceOracle.address,
       600,
@@ -77,8 +77,8 @@ contract('BulkRenewal', function(accounts) {
     // Create the bulk registration contract
     bulkRenewal = await BulkRenewal.new(ens.address)
 
-    // Configure a resolver for .pls and register the controller interface
-    // then transfer the .pls node to the base registrar.
+    // Configure a resolver for .arb and register the controller interface
+    // then transfer the .arb node to the base registrar.
     await ens.setSubnodeRecord(
       '0x0',
       ETH_LABEL,
@@ -115,6 +115,6 @@ contract('BulkRenewal', function(accounts) {
     const newExpiry = await baseRegistrar.nameExpires(sha3('test2'))
     assert.equal(newExpiry - oldExpiry, 86400)
     // Check any excess funds are returned
-    assert.equal(await web3.pls.getBalance(bulkRenewal.address), 0)
+    assert.equal(await web3.arb.getBalance(bulkRenewal.address), 0)
   })
 })

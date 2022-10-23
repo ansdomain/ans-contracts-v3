@@ -29,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 func.id = 'price-oracle'
-func.tags = ['ethregistrar', 'ExponentialPremiumPriceOracle', 'DummyOracle']
+func.tags = ['arbregistrar', 'ExponentialPremiumPriceOracle', 'DummyOracle']
 func.dependencies = ['registry']
 
 export default func

@@ -15,17 +15,17 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const reverseRegistrar = await ethers.getContract('ReverseRegistrar', owner)
 
   if (network.tags.legacy) {
-    await deploy('LegacyETHRegistrarController', {
+    await deploy('LegacyARBRegistrarController', {
       from: deployer,
       args: [registrar.address, priceOracle.address, 60, 86400],
       log: true,
       contract: await deployments.getArtifact(
-        'ETHRegistrarController_mainnet_9380471',
+        'ARBRegistrarController_mainnet_9380471',
       ),
     })
 
     const controller = await ethers.getContract(
-      'LegacyETHRegistrarController',
+      'LegacyARBRegistrarController',
       owner,
     )
 
@@ -54,7 +54,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 func.id = 'legacy-controller'
-func.tags = ['LegacyETHRegistrarController']
+func.tags = ['LegacyARBRegistrarController']
 func.dependencies = [
   'registry',
   'wrapper',

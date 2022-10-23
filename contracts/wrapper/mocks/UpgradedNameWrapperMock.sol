@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 import "../INameWrapper.sol";
 import "../../registry/ANS.sol";
-import "../../ethregistrar/IBaseRegistrar.sol";
+import "../../arbregistrar/IBaseRegistrar.sol";
 
 contract UpgradedNameWrapperMock {
     address public immutable oldNameWrapper;

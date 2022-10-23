@@ -14,7 +14,7 @@ contract('PublicResolver', function(accounts) {
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
   beforeEach(async () => {
-    node = namehash.hash('pls')
+    node = namehash.hash('arb')
     ens = await ENS.new()
     nameWrapper = await NameWrapper.new()
     resolver = await PublicResolver.new(
@@ -23,7 +23,7 @@ contract('PublicResolver', function(accounts) {
       accounts[9], // trusted contract
       EMPTY_ADDRESS
     )
-    await ens.setSubnodeOwner('0x0', sha3('pls'), accounts[0], {
+    await ens.setSubnodeOwner('0x0', sha3('arb'), accounts[0], {
       from: accounts[0],
     })
   })
@@ -31,7 +31,7 @@ contract('PublicResolver', function(accounts) {
   describe('fallback function', async () => {
     it('forbids calls to the fallback function with 0 value', async () => {
       await exceptions.expectFailure(
-        web3.pls.sendTransaction({
+        web3.arb.sendTransaction({
           from: accounts[0],
           to: resolver.address,
           gas: 3000000,
@@ -41,7 +41,7 @@ contract('PublicResolver', function(accounts) {
 
     it('forbids calls to the fallback function with 1 value', async () => {
       await exceptions.expectFailure(
-        web3.pls.sendTransaction({
+        web3.arb.sendTransaction({
           from: accounts[0],
           to: resolver.address,
           gas: 3000000,
@@ -211,7 +211,7 @@ contract('PublicResolver', function(accounts) {
 
     it('forbids calls to the fallback function with 1 value', async () => {
       await exceptions.expectFailure(
-        web3.pls.sendTransaction({
+        web3.arb.sendTransaction({
           from: accounts[0],
           to: resolver.address,
           gas: 3000000,
@@ -705,13 +705,13 @@ contract('PublicResolver', function(accounts) {
 
   describe('dns', async () => {
     const basicSetDNSRecords = async () => {
-      // a.pls. 3600 IN A 1.2.3.4
+      // a.arb. 3600 IN A 1.2.3.4
       const arec = '016103657468000001000100000e10000401020304'
-      // b.pls. 3600 IN A 2.3.4.5
+      // b.arb. 3600 IN A 2.3.4.5
       const b1rec = '016203657468000001000100000e10000402030405'
-      // b.pls. 3600 IN A 3.4.5.6
+      // b.arb. 3600 IN A 3.4.5.6
       const b2rec = '016203657468000001000100000e10000403040506'
-      // eth. 86400 IN SOA ns1.ethdns.xyz. hostmaster.test.pls. 2018061501 15620 1800 1814400 14400
+      // eth. 86400 IN SOA ns1.ethdns.xyz. hostmaster.test.arb. 2018061501 15620 1800 1814400 14400
       const soarec =
         '03657468000006000100015180003a036e733106657468646e730378797a000a686f73746d6173746572057465737431036574680078492cbd00003d0400000708001baf8000003840'
       const rec = '0x' + arec + b1rec + b2rec + soarec
@@ -719,11 +719,11 @@ contract('PublicResolver', function(accounts) {
       await resolver.setDNSRecords(node, rec, { from: accounts[0] })
 
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('a.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('a.arb.')), 1),
         '0x016103657468000001000100000e10000401020304'
       )
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('b.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('b.arb.')), 1),
         '0x016203657468000001000100000e10000402030405016203657468000001000100000e10000403040506'
       )
       assert.equal(
@@ -734,9 +734,9 @@ contract('PublicResolver', function(accounts) {
     it('permits setting name by owner', basicSetDNSRecords)
 
     it('should update existing records', async () => {
-      // a.pls. 3600 IN A 4.5.6.7
+      // a.arb. 3600 IN A 4.5.6.7
       const arec = '016103657468000001000100000e10000404050607'
-      // eth. 86400 IN SOA ns1.ethdns.xyz. hostmaster.test.pls. 2018061502 15620 1800 1814400 14400
+      // eth. 86400 IN SOA ns1.ethdns.xyz. hostmaster.test.arb. 2018061502 15620 1800 1814400 14400
       const soarec =
         '03657468000006000100015180003a036e733106657468646e730378797a000a686f73746d6173746572057465737431036574680078492cbe00003d0400000708001baf8000003840'
       const rec = '0x' + arec + soarec
@@ -744,7 +744,7 @@ contract('PublicResolver', function(accounts) {
       await resolver.setDNSRecords(node, rec, { from: accounts[0] })
 
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('a.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('a.arb.')), 1),
         '0x016103657468000001000100000e10000404050607'
       )
       assert.equal(
@@ -754,7 +754,7 @@ contract('PublicResolver', function(accounts) {
     })
 
     it('should keep track of entries', async () => {
-      // c.pls. 3600 IN A 1.2.3.4
+      // c.arb. 3600 IN A 1.2.3.4
       const crec = '016303657468000001000100000e10000401020304'
       const rec = '0x' + crec
 
@@ -763,43 +763,43 @@ contract('PublicResolver', function(accounts) {
       // Initial check
       var hasEntries = await resolver.hasDNSRecords(
         node,
-        sha3(dnsName('c.pls.'))
+        sha3(dnsName('c.arb.'))
       )
       assert.equal(hasEntries, true)
-      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('d.pls.')))
+      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('d.arb.')))
       assert.equal(hasEntries, false)
 
       // Update with no new data makes no difference
       await resolver.setDNSRecords(node, rec, { from: accounts[0] })
-      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('c.pls.')))
+      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('c.arb.')))
       assert.equal(hasEntries, true)
 
-      // c.pls. 3600 IN A
+      // c.arb. 3600 IN A
       const crec2 = '016303657468000001000100000e100000'
       const rec2 = '0x' + crec2
 
       await resolver.setDNSRecords(node, rec2, { from: accounts[0] })
 
       // Removal returns to 0
-      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('c.pls.')))
+      hasEntries = await resolver.hasDNSRecords(node, sha3(dnsName('c.arb.')))
       assert.equal(hasEntries, false)
     })
 
     it('should handle single-record updates', async () => {
-      // e.pls. 3600 IN A 1.2.3.4
+      // e.arb. 3600 IN A 1.2.3.4
       const erec = '016503657468000001000100000e10000401020304'
       const rec = '0x' + erec
 
       await resolver.setDNSRecords(node, rec, { from: accounts[0] })
 
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('e.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('e.arb.')), 1),
         '0x016503657468000001000100000e10000401020304'
       )
     })
 
     it('forbids setting DNS records by non-owners', async () => {
-      // f.pls. 3600 IN A 1.2.3.4
+      // f.arb. 3600 IN A 1.2.3.4
       const frec = '016603657468000001000100000e10000401020304'
       const rec = '0x' + frec
       await exceptions.expectFailure(
@@ -949,11 +949,11 @@ contract('PublicResolver', function(accounts) {
       await basicSetDNSRecords()
       await resolver.clearRecords(node)
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('a.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('a.arb.')), 1),
         null,
       )
       assert.equal(
-        await resolver.dnsRecord(node, sha3(dnsName('b.pls.')), 1),
+        await resolver.dnsRecord(node, sha3(dnsName('b.arb.')), 1),
         null,
       )
       assert.equal(
@@ -1209,11 +1209,11 @@ contract('PublicResolver', function(accounts) {
         resolver.contract.methods.text(node, 'url').encodeABI(),
       ])
       assert.equal(
-        web3.pls.abi.decodeParameters(['address'], results[0])[0],
+        web3.arb.abi.decodeParameters(['address'], results[0])[0],
         accounts[1]
       )
       assert.equal(
-        web3.pls.abi.decodeParameters(['string'], results[1])[0],
+        web3.arb.abi.decodeParameters(['string'], results[1])[0],
         'https://ethereum.org/'
       )
     })

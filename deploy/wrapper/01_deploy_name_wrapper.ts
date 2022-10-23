@@ -21,9 +21,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const deployArgs0 = {
     from: deployer,
-    args: [registry.address, namehash.hash('pls')],
+    args: [registry.address, namehash.hash('arb')],
     log: true,
   };
+  
+  await deploy('BaseRegistrarImplementation', deployArgs0)
 
   const registrar = await ethers.getContract(
     'BaseRegistrarImplementation',
@@ -50,7 +52,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   // Only attempt to make controller etc changes directly on testnets
-  if (network.name === 'mainnet') return
+  if (network.name === 'arbitrumGoerli') return
 
   const tx2 = await registrar.addController(nameWrapper.address)
   console.log(
@@ -62,12 +64,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const interfaceId = computeInterfaceId(new Interface(artifact.abi))
   const providerWithEns = new ethers.providers.StaticJsonRpcProvider(
     ethers.provider.connection.url,
-    { ...ethers.provider.network, ansAddress: registry.address },
+    { ...ethers.provider.network, ensAddress: registry.address },
   )
-  const resolver = await providerWithEns.getResolver('pls')
+  const resolver = await providerWithEns.getResolver('arb')
   if (resolver === null) {
     console.log(
-      'No resolver set for .pls; not setting interface for NameWrapper',
+      'No resolver set for .arb; not setting interface for NameWrapper',
     )
     return
   }
@@ -76,12 +78,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     resolver.address,
   )
   const tx3 = await resolverContract.setInterface(
-    ethers.utils.namehash('pls'),
+    ethers.utils.namehash('arb'),
     interfaceId,
     nameWrapper.address,
   )
   console.log(
-    `Setting NameWrapper interface ID ${interfaceId} on .pls resolver (tx: ${tx3.hash})...`,
+    `Setting NameWrapper interface ID ${interfaceId} on .arb resolver (tx: ${tx3.hash})...`,
   )
   await tx3.wait()
 }

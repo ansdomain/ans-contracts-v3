@@ -5,7 +5,7 @@ import {BaseRegistrarImplementation} from "./BaseRegistrarImplementation.sol";
 import {StringUtils} from "./StringUtils.sol";
 import {Resolver} from "../resolvers/Resolver.sol";
 import {ReverseRegistrar} from "../registry/ReverseRegistrar.sol";
-import {IETHRegistrarController, IPriceOracle} from "./IETHRegistrarController.sol";
+import {IARBRegistrarController, IPriceOracle} from "./IARBRegistrarController.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
@@ -27,9 +27,9 @@ error MaxCommitmentAgeTooHigh();
 /**
  * @dev A registrar controller for registering and renewing names at fixed cost.
  */
-contract ETHRegistrarController is
+contract ARBRegistrarController is
     Ownable,
-    IETHRegistrarController,
+    IARBRegistrarController,
     IERC165,
     ERC20Recoverable
 {
@@ -265,7 +265,7 @@ contract ETHRegistrarController is
     {
         return
             interfaceID == type(IERC165).interfaceId ||
-            interfaceID == type(IETHRegistrarController).interfaceId;
+            interfaceID == type(IARBRegistrarController).interfaceId;
     }
 
     /* Internal functions */

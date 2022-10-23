@@ -7,7 +7,7 @@ import {INameWrapper, CANNOT_UNWRAP, CANNOT_BURN_FUSES, CANNOT_TRANSFER, CANNOT_
 import {INameWrapperUpgrade} from "./INameWrapperUpgrade.sol";
 import {IMetadataService} from "./IMetadataService.sol";
 import {ANS} from "../registry/ANS.sol";
-import {IBaseRegistrar} from "../ethregistrar/IBaseRegistrar.sol";
+import {IBaseRegistrar} from "../arbregistrar/IBaseRegistrar.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {BytesUtils} from "./BytesUtils.sol";
@@ -91,7 +91,7 @@ contract NameWrapper is
 
     /**
      * @notice Gets the owner of a name
-     * @param id Label as a string of the .pls domain to wrap
+     * @param id Label as a string of the .arb domain to wrap
      * @return owner The owner of the name
      */
 
@@ -106,7 +106,7 @@ contract NameWrapper is
 
     /**
      * @notice Gets the data for a name
-     * @param id Label as a string of the .pls domain to wrap
+     * @param id Label as a string of the .arb domain to wrap
      * @return address The owner of the name
      * @return uint32 Fuses of the name
      * @return uint64 Expiry of when the fuses expire for the name
@@ -204,9 +204,9 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Wraps a .pls domain, creating a new token and sending the original ERC721 token to this contract
-     * @dev Can be called by the owner of the name on the .pls registrar or an authorised caller on the registrar
-     * @param label Label as a string of the .pls domain to wrap
+     * @notice Wraps a .arb domain, creating a new token and sending the original ERC721 token to this contract
+     * @dev Can be called by the owner of the name on the .arb registrar or an authorised caller on the registrar
+     * @param label Label as a string of the .arb domain to wrap
      * @param wrappedOwner Owner of the name in this contract
      * @param fuses Initial fuses to set
      * @param expiry When the fuses will expire
@@ -243,15 +243,15 @@ contract NameWrapper is
     }
 
     /**
-     * @dev Registers a new .pls second-level domain and wraps it.
+     * @dev Registers a new .arb second-level domain and wraps it.
      *      Only callable by authorised controllers.
-     * @param label The label to register (Eg, 'foo' for 'foo.pls').
+     * @param label The label to register (Eg, 'foo' for 'foo.arb').
      * @param wrappedOwner The owner of the wrapped name.
      * @param duration The duration, in seconds, to register the name for.
      * @param resolver The resolver address to set on the ANS registry (optional).
      * @param fuses Initial fuses to set
      * @param expiry When the fuses will expire
-     * @return registrarExpiry The expiry date of the new name on the .pls registrar, in seconds since the Unix epoch.
+     * @return registrarExpiry The expiry date of the new name on the .arb registrar, in seconds since the Unix epoch.
      */
 
     function registerAndWrapETH2LD(
@@ -268,11 +268,11 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Renews a .pls second-level domain.
+     * @notice Renews a .arb second-level domain.
      * @dev Only callable by authorised controllers.
-     * @param tokenId The hash of the label to register (eg, `keccak256('foo')`, for 'foo.pls').
+     * @param tokenId The hash of the label to register (eg, `keccak256('foo')`, for 'foo.arb').
      * @param duration The number of seconds to renew the name for.
-     * @return expires The expiry date of the name on the .pls registrar, in seconds since the Unix epoch.
+     * @return expires The expiry date of the name on the .arb registrar, in seconds since the Unix epoch.
      */
 
     function renew(
@@ -300,7 +300,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Wraps a non .pls domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
+     * @notice Wraps a non .arb domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
      * @dev Can be called by the owner in the registry or an authorised caller in the registry
      * @param name The name to wrap, in DNS format
      * @param wrappedOwner Owner of the name in this contract
@@ -336,10 +336,10 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Unwraps a .pls domain. e.g. vitalik.pls
+     * @notice Unwraps a .arb domain. e.g. vitalik.arb
      * @dev Can be called by the owner in the wrapper or an authorised caller in the wrapper
-     * @param labelhash Labelhash of the .pls domain
-     * @param registrant Sets the owner in the .pls registrar to this address
+     * @param labelhash Labelhash of the .arb domain
+     * @param registrant Sets the owner in the .arb registrar to this address
      * @param controller Sets the owner in the registry to this address
      */
 
@@ -363,7 +363,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Unwraps a non .pls domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
+     * @notice Unwraps a non .arb domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
      * @dev Can be called by the owner in the wrapper or an authorised caller in the wrapper
      * @param parentNode Parent namehash of the name e.g. vitalik.xyz would be namehash('xyz')
      * @param labelhash Labelhash of the name, e.g. vitalik.xyz would be keccak256('vitalik')
@@ -409,10 +409,10 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Upgrades a .pls wrapped domain by calling the wrapETH2LD function of the upgradeContract
+     * @notice Upgrades a .arb wrapped domain by calling the wrapETH2LD function of the upgradeContract
      *     and burning the token of this contract
      * @dev Can be called by the owner of the name in this contract
-     * @param label Label as a string of the .pls name to upgrade
+     * @param label Label as a string of the .arb name to upgrade
      * @param wrappedOwner The owner of the wrapped name
      */
 
@@ -435,7 +435,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Upgrades a non .pls domain of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
+     * @notice Upgrades a non .arb domain of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
      * @dev Can be called by the owner or an authorised caller
      * Requires upgraded Namewrapper to permit old Namewrapper to call `setSubnodeRecord` for all names
      * @param parentNode Namehash of the parent name
@@ -465,7 +465,7 @@ contract NameWrapper is
     }
 
     /** 
-    /* @notice Sets fuses of a name that you own the parent of. Can also be called by the owner of a .pls name
+    /* @notice Sets fuses of a name that you own the parent of. Can also be called by the owner of a .arb name
      * @param parentNode Parent namehash of the name e.g. vitalik.xyz would be namehash('xyz')
      * @param labelhash Labelhash of the name, e.g. vitalik.xyz would be keccak256('vitalik')
      * @param fuses Fuses to burn
@@ -926,7 +926,7 @@ contract NameWrapper is
         uint64 maxExpiry
     ) internal pure returns (uint64) {
         // Expiry cannot be more than maximum allowed
-        // .pls names will check registrar, non .pls check parent
+        // .arb names will check registrar, non .arb check parent
         if (expiry > maxExpiry) {
             expiry = maxExpiry;
         }

@@ -9,7 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const registry = await ethers.getContract('ANSRegistry', owner)
   const nameWrapper = await ethers.getContract('NameWrapper', owner)
-  const controller = await ethers.getContract('ETHRegistrarController', owner)
+  const controller = await ethers.getContract('ARBRegistrarController', owner)
   const reverseRegistrar = await ethers.getContract('ReverseRegistrar', owner)
 
   const deployArgs = {
@@ -22,8 +22,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ],
     log: true,
   }
+  await deploy('PublicResolver', deployArgs)
+
   const publicResolver = await ethers.getContract('PublicResolver')
-  // await deploy('PublicResolver', deployArgs)
+  await deploy('PublicResolver', deployArgs)
   if (!publicResolver.newlyDeployed) return
 
   const tx = await reverseRegistrar.setDefaultResolver(publicResolver.address)
@@ -32,23 +34,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   )
   await tx.wait()
 
-  if ((await registry.owner(ethers.utils.namehash('resolver.pls'))) === owner) {
+  if ((await registry.owner(ethers.utils.namehash('resolver.arb'))) === owner) {
     const pr = await ethers.getContract('PublicResolver')
-    const resolverHash = ethers.utils.namehash('resolver.pls')
+    const resolverHash = ethers.utils.namehash('resolver.arb')
     const tx2 = await registry.setResolver(resolverHash, pr.address)
     console.log(
-      `Setting resolver for resolver.pls to PublicResolver (tx: ${tx2.hash})...`,
+      `Setting resolver for resolver.arb to PublicResolver (tx: ${tx2.hash})...`,
     )
     await tx2.wait()
 
     const tx3 = await pr['setAddr(bytes32,address)'](resolverHash, pr.address)
     console.log(
-      `Setting address for resolver.pls to PublicResolver (tx: ${tx3.hash})...`,
+      `Setting address for resolver.arb to PublicResolver (tx: ${tx3.hash})...`,
     )
     await tx3.wait()
   } else {
     console.log(
-      'resolver.pls is not owned by the owner address, not setting resolver',
+      'resolver.arb is not owned by the owner address, not setting resolver',
     )
   }
 }
@@ -57,7 +59,7 @@ func.id = 'resolver'
 func.tags = ['resolvers', 'PublicResolver']
 func.dependencies = [
   'registry',
-  'ETHRegistrarController',
+  'ARBRegistrarController',
   'NameWrapper',
   'ReverseRegistrar',
 ]
