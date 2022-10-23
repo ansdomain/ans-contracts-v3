@@ -17,7 +17,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = deployments
   const { deployer, owner } = await getNamedAccounts()
 
-  const registry = await ethers.getContract('ENSRegistry', owner)
+  const registry = await ethers.getContract('ANSRegistry', owner)
 
   const deployArgs0 = {
     from: deployer,
@@ -62,7 +62,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const interfaceId = computeInterfaceId(new Interface(artifact.abi))
   const providerWithEns = new ethers.providers.StaticJsonRpcProvider(
     ethers.provider.connection.url,
-    { ...ethers.provider.network, ensAddress: registry.address },
+    { ...ethers.provider.network, ansAddress: registry.address },
   )
   const resolver = await providerWithEns.getResolver('pls')
   if (resolver === null) {

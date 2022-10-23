@@ -80,7 +80,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   let transactions: any[] = []
   if (network.tags.use_root) {
     const root = await ethers.getContract('Root', signer)
-    const registry = await ethers.getContract('ENSRegistry', signer)
+    const registry = await ethers.getContract('ANSRegistry', signer)
     transactions = await setTLDsOnRoot(
       owner,
       root,
@@ -89,7 +89,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       tld_map[network.name as keyof typeof tld_map],
     )
   } else {
-    const registry = await ethers.getContract('ENSRegistry', signer)
+    const registry = await ethers.getContract('ANSRegistry', signer)
     transactions = await setTLDsOnRegistry(
       owner,
       registry,

@@ -140,7 +140,7 @@ abstract contract DNSResolver is
 
     /**
      * setZonehash sets the hash for the zone.
-     * May only be called by the owner of that node in the ENS registry.
+     * May only be called by the owner of that node in the  registry.
      * @param node The node to update.
      * @param hash The zonehash to set
      */
@@ -159,7 +159,7 @@ abstract contract DNSResolver is
 
     /**
      * zonehash obtains the hash for the zone.
-     * @param node The ENS node to query.
+     * @param node The  node to query.
      * @return The associated contenthash.
      */
     function zonehash(bytes32 node)

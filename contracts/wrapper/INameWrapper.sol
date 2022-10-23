@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ~0.8.17;
 
-import "../registry/ENS.sol";
+import "../registry/ANS.sol";
 import "../ethregistrar/IBaseRegistrar.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "./IMetadataService.sol";
@@ -28,7 +28,7 @@ interface INameWrapper is IERC1155 {
 
     event FusesSet(bytes32 indexed node, uint32 fuses, uint64 expiry);
 
-    function ens() external view returns (ENS);
+    function ans() external view returns (ANS);
 
     function registrar() external view returns (IBaseRegistrar);
 

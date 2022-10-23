@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.17 <0.9.0;
 
-import "../registry/ENS.sol";
+import "../registry/ANS.sol";
 import "./profiles/ABIResolver.sol";
 import "./profiles/AddrResolver.sol";
 import "./profiles/ContentHashResolver.sol";
@@ -31,7 +31,7 @@ contract PublicResolver is
     PubkeyResolver,
     TextResolver
 {
-    ENS immutable ens;
+    ANS immutable ans;
     INameWrapper immutable nameWrapper;
     address immutable trustedETHController;
     address immutable trustedReverseRegistrar;
@@ -52,12 +52,12 @@ contract PublicResolver is
     );
 
     constructor(
-        ENS _ens,
+        ANS _ans,
         INameWrapper wrapperAddress,
         address _trustedETHController,
         address _trustedReverseRegistrar
     ) {
-        ens = _ens;
+        ans = _ans;
         nameWrapper = wrapperAddress;
         trustedETHController = _trustedETHController;
         trustedReverseRegistrar = _trustedReverseRegistrar;
@@ -94,7 +94,7 @@ contract PublicResolver is
         ) {
             return true;
         }
-        address owner = ens.owner(node);
+        address owner = ans.owner(node);
         if (owner == address(nameWrapper)) {
             owner = nameWrapper.ownerOf(uint256(node));
         }

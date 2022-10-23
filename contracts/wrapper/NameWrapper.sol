@@ -6,7 +6,7 @@ import {Controllable} from "./Controllable.sol";
 import {INameWrapper, CANNOT_UNWRAP, CANNOT_BURN_FUSES, CANNOT_TRANSFER, CANNOT_SET_RESOLVER, CANNOT_SET_TTL, CANNOT_CREATE_SUBDOMAIN, PARENT_CANNOT_CONTROL, CAN_DO_EVERYTHING} from "./INameWrapper.sol";
 import {INameWrapperUpgrade} from "./INameWrapperUpgrade.sol";
 import {IMetadataService} from "./IMetadataService.sol";
-import {ENS} from "../registry/ENS.sol";
+import {ANS} from "../registry/ANS.sol";
 import {IBaseRegistrar} from "../ethregistrar/IBaseRegistrar.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -33,7 +33,7 @@ contract NameWrapper is
     ERC20Recoverable
 {
     using BytesUtils for bytes;
-    ENS public immutable override ens;
+    ANS public immutable override ans;
     IBaseRegistrar public immutable override registrar;
     IMetadataService public override metadataService;
     mapping(bytes32 => bytes) public override names;
@@ -48,11 +48,11 @@ contract NameWrapper is
     uint64 private constant MAX_EXPIRY = type(uint64).max;
 
     constructor(
-        ENS _ens,
+        ANS _ans,
         IBaseRegistrar _registrar,
         IMetadataService _metadataService
     ) {
-        ens = _ens;
+        ans = _ans;
         registrar = _registrar;
         metadataService = _metadataService;
 
@@ -162,14 +162,14 @@ contract NameWrapper is
     {
         if (address(upgradeContract) != address(0)) {
             registrar.setApprovalForAll(address(upgradeContract), false);
-            ens.setApprovalForAll(address(upgradeContract), false);
+            ans.setApprovalForAll(address(upgradeContract), false);
         }
 
         upgradeContract = _upgradeAddress;
 
         if (address(upgradeContract) != address(0)) {
             registrar.setApprovalForAll(address(upgradeContract), true);
-            ens.setApprovalForAll(address(upgradeContract), true);
+            ans.setApprovalForAll(address(upgradeContract), true);
         }
     }
 
@@ -236,7 +236,7 @@ contract NameWrapper is
         // transfer the token from the user to this contract
         registrar.transferFrom(registrant, address(this), tokenId);
 
-        // transfer the ens record back to the new owner (this contract)
+        // transfer the ans record back to the new owner (this contract)
         registrar.reclaim(tokenId, address(this));
 
         return _wrapETH2LD(label, wrappedOwner, fuses, expiry, resolver);
@@ -248,7 +248,7 @@ contract NameWrapper is
      * @param label The label to register (Eg, 'foo' for 'foo.pls').
      * @param wrappedOwner The owner of the wrapped name.
      * @param duration The duration, in seconds, to register the name for.
-     * @param resolver The resolver address to set on the ENS registry (optional).
+     * @param resolver The resolver address to set on the ANS registry (optional).
      * @param fuses Initial fuses to set
      * @param expiry When the fuses will expire
      * @return registrarExpiry The expiry date of the new name on the .pls registrar, in seconds since the Unix epoch.
@@ -320,17 +320,17 @@ contract NameWrapper is
             revert IncompatibleParent();
         }
 
-        address owner = ens.owner(node);
+        address owner = ans.owner(node);
 
-        if (owner != msg.sender && !ens.isApprovedForAll(owner, msg.sender)) {
+        if (owner != msg.sender && !ans.isApprovedForAll(owner, msg.sender)) {
             revert Unauthorised(node, msg.sender);
         }
 
         if (resolver != address(0)) {
-            ens.setResolver(node, resolver);
+            ans.setResolver(node, resolver);
         }
 
-        ens.setOwner(node, address(this));
+        ans.setOwner(node, address(this));
 
         _wrap(node, name, wrappedOwner, 0, 0);
     }
@@ -543,7 +543,7 @@ contract NameWrapper is
         expiry = _checkParentFusesAndExpiry(parentNode, node, fuses, expiry);
 
         if (!isWrapped(node)) {
-            ens.setSubnodeOwner(parentNode, labelhash, address(this));
+            ans.setSubnodeOwner(parentNode, labelhash, address(this));
             _addLabelAndWrap(parentNode, node, label, owner, fuses, expiry);
         } else {
             _updateName(parentNode, node, label, owner, fuses, expiry);
@@ -580,7 +580,7 @@ contract NameWrapper is
         node = _makeNode(parentNode, labelhash);
         expiry = _checkParentFusesAndExpiry(parentNode, node, fuses, expiry);
         if (!isWrapped(node)) {
-            ens.setSubnodeRecord(
+            ans.setSubnodeRecord(
                 parentNode,
                 labelhash,
                 address(this),
@@ -589,7 +589,7 @@ contract NameWrapper is
             );
             _addLabelAndWrap(parentNode, node, label, owner, fuses, expiry);
         } else {
-            ens.setSubnodeRecord(
+            ans.setSubnodeRecord(
                 parentNode,
                 labelhash,
                 address(this),
@@ -601,7 +601,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Sets records for the name in the ENS Registry
+     * @notice Sets records for the name in the ANS Registry
      * @param node Namehash of the name to set a record for
      * @param owner New owner in the registry
      * @param resolver Resolver contract
@@ -622,7 +622,7 @@ contract NameWrapper is
             CANNOT_TRANSFER | CANNOT_SET_RESOLVER | CANNOT_SET_TTL
         )
     {
-        ens.setRecord(node, address(this), resolver, ttl);
+        ans.setRecord(node, address(this), resolver, ttl);
         (address oldOwner, , ) = getData(uint256(node));
         _transfer(oldOwner, owner, uint256(node), 1, "");
     }
@@ -639,7 +639,7 @@ contract NameWrapper is
         onlyTokenOwner(node)
         operationAllowed(node, CANNOT_SET_RESOLVER)
     {
-        ens.setResolver(node, resolver);
+        ans.setResolver(node, resolver);
     }
 
     /**
@@ -654,7 +654,7 @@ contract NameWrapper is
         onlyTokenOwner(node)
         operationAllowed(node, CANNOT_SET_TTL)
     {
-        ens.setTTL(node, ttl);
+        ans.setTTL(node, ttl);
     }
 
     /**
@@ -683,7 +683,7 @@ contract NameWrapper is
 
     modifier canCallSetSubnodeOwner(bytes32 node, bytes32 labelhash) {
         bytes32 subnode = _makeNode(node, labelhash);
-        address owner = ens.owner(subnode);
+        address owner = ans.owner(subnode);
 
         if (owner == address(0)) {
             (, uint32 fuses, ) = getData(uint256(node));
@@ -727,7 +727,7 @@ contract NameWrapper is
     function isWrapped(bytes32 node) public view override returns (bool) {
         return
             ownerOf(uint256(node)) != address(0) &&
-            ens.owner(node) == address(this);
+            ans.owner(node) == address(this);
     }
 
     function onERC721Received(
@@ -756,7 +756,7 @@ contract NameWrapper is
             revert LabelMismatch(labelhashFromData, labelhash);
         }
 
-        // transfer the ens record back to the new owner (this contract)
+        // transfer the ans record back to the new owner (this contract)
         registrar.reclaim(uint256(labelhash), address(this));
 
         _wrapETH2LD(label, owner, fuses, expiry, resolver);
@@ -966,7 +966,7 @@ contract NameWrapper is
             expiry
         );
         if (resolver != address(0)) {
-            ens.setResolver(node, resolver);
+            ans.setResolver(node, resolver);
         }
 
         return expiry;
@@ -979,7 +979,7 @@ contract NameWrapper is
 
         // Burn token and fuse data
         _burn(uint256(node));
-        ens.setOwner(node, owner);
+        ans.setOwner(node, owner);
 
         emit NameUnwrapped(node, owner);
     }

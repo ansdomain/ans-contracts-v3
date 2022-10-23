@@ -78,7 +78,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ethers.provider.connection.url,
     {
       ...ethers.provider.network,
-      ensAddress: (await ethers.getContract('ENSRegistry')).address,
+      ansAddress: (await ethers.getContract('ANSRegistry')).address,
     },
   )
   const resolver = await provider.getResolver('pls')
@@ -105,7 +105,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 func.tags = ['ethregistrar', 'ETHRegistrarController']
 func.dependencies = [
-  'ENSRegistry',
+  'ANSRegistry',
   'BaseRegistrarImplementation',
   'ExponentialPremiumPriceOracle',
   'ReverseRegistrar',

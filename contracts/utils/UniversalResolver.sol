@@ -4,7 +4,7 @@ pragma solidity >=0.8.17 <0.9.0;
 import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {LowLevelCallUtils} from "./LowLevelCallUtils.sol";
-import {ENS} from "../registry/ENS.sol";
+import {ANS} from "../registry/ANS.sol";
 import {IExtendedResolver} from "../resolvers/profiles/IExtendedResolver.sol";
 import {Resolver, INameResolver, IAddrResolver} from "../resolvers/Resolver.sol";
 import {NameEncoder} from "./NameEncoder.sol";
@@ -20,23 +20,23 @@ error OffchainLookup(
 
 /**
  * The Universal Resolver is a contract that handles the work of resolving a name entirely onchain,
- * making it possible to make a single smart contract call to resolve an ENS name.
+ * making it possible to make a single smart contract call to resolve an ANS name.
  */
 contract UniversalResolver is IExtendedResolver, ERC165 {
     using Address for address;
     using NameEncoder for string;
     using BytesUtils for bytes;
 
-    ENS public immutable registry;
+    ANS public immutable registry;
 
     constructor(address _registry) {
-        registry = ENS(_registry);
+        registry = ANS(_registry);
     }
 
     /**
-     * @dev Performs ENS name resolution for the supplied name and resolution data.
+     * @dev Performs ANS name resolution for the supplied name and resolution data.
      * @param name The name to resolve, in normalised and DNS-encoded form.
-     * @param data The resolution data, as specified in ENSIP-10.
+     * @param data The resolution data, as specified in ANSIP-10.
      * @return The result of resolving the name.
      */
     function resolve(bytes calldata name, bytes memory data)
@@ -75,7 +75,7 @@ contract UniversalResolver is IExtendedResolver, ERC165 {
     }
 
     /**
-     * @dev Performs ENS name reverse resolution for the supplied reverse name.
+     * @dev Performs ANS name reverse resolution for the supplied reverse name.
      * @param reverseName The reverse name to resolve, in normalised and DNS-encoded form. e.g. b6E040C9ECAaE172a89bD561c5F73e1C48d28cd9.addr.reverse
      * @return The resolved name, the resolved address, the reverse resolver address, and the resolver address.
      */

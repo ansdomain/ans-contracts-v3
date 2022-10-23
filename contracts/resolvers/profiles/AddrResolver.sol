@@ -15,8 +15,8 @@ abstract contract AddrResolver is
     mapping(uint64 => mapping(bytes32 => mapping(uint256 => bytes))) versionable_addresses;
 
     /**
-     * Sets the address associated with an ENS node.
-     * May only be called by the owner of that node in the ENS registry.
+     * Sets the address associated with an ANS node.
+     * May only be called by the owner of that node in the ANS registry.
      * @param node The node to update.
      * @param a The address to set.
      */
@@ -29,8 +29,8 @@ abstract contract AddrResolver is
     }
 
     /**
-     * Returns the address associated with an ENS node.
-     * @param node The ENS node to query.
+     * Returns the address associated with an ANS node.
+     * @param node The ANS node to query.
      * @return The associated address.
      */
     function addr(bytes32 node)

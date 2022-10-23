@@ -1,6 +1,6 @@
 pragma solidity >=0.8.4;
 
-import "./ENS.sol";
+import "./ANS.sol";
 
 /**
  * A registrar that allocates subdomains to the first person to claim them, but
@@ -9,17 +9,17 @@ import "./ENS.sol";
 contract TestRegistrar {
     uint256 constant registrationPeriod = 4 weeks;
 
-    ENS public immutable ens;
+    ANS public immutable ans;
     bytes32 public immutable rootNode;
     mapping(bytes32 => uint256) public expiryTimes;
 
     /**
      * Constructor.
-     * @param ensAddr The address of the ENS registry.
+     * @param ansAddr The address of the ANS registry.
      * @param node The node that this registrar administers.
      */
-    constructor(ENS ensAddr, bytes32 node) {
-        ens = ensAddr;
+    constructor(ANS ansAddr, bytes32 node) {
+        ans = ansAddr;
         rootNode = node;
     }
 
@@ -32,6 +32,6 @@ contract TestRegistrar {
         require(expiryTimes[label] < block.timestamp);
 
         expiryTimes[label] = block.timestamp + registrationPeriod;
-        ens.setSubnodeOwner(rootNode, label, owner);
+        ans.setSubnodeOwner(rootNode, label, owner);
     }
 }

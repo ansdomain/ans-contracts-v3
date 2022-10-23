@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ~0.8.17;
 
-import "../registry/ENS.sol";
+import "../registry/ANS.sol";
 import "./ETHRegistrarController.sol";
 import "./IETHRegistrarController.sol";
 import "../resolvers/Resolver.sol";
@@ -14,14 +14,14 @@ contract BulkRenewal is IBulkRenewal {
     bytes32 private constant ETH_NAMEHASH =
         0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
 
-    ENS public immutable ens;
+    ANS public immutable ans;
 
-    constructor(ENS _ens) {
-        ens = _ens;
+    constructor(ANS _ans) {
+        ans = _ans;
     }
 
     function getController() internal view returns (ETHRegistrarController) {
-        Resolver r = Resolver(ens.resolver(ETH_NAMEHASH));
+        Resolver r = Resolver(ans.resolver(ETH_NAMEHASH));
         return
             ETHRegistrarController(
                 r.interfaceImplementer(
