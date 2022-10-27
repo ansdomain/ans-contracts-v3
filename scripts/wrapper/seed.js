@@ -47,7 +47,7 @@ async function main(a) {
     
     await (await BaseRegistrar.setApprovalForAll(NameWrapper.address, true)).wait()
     await (await EnsRegistry.setApprovalForAll(NameWrapper.address, true)).wait()
-    await (await NameWrapper.wrapETH2LD(name, firstAddress, CAN_DO_EVERYTHING)).wait()
+    await (await NameWrapper.wrapARB2LD(name, firstAddress, CAN_DO_EVERYTHING)).wait()
     console.log(`Wrapped NFT for ${domain} is available at ${getOpenSeaUrl(NameWrapper.address, namehashedname)}`)
     await (await NameWrapper.setSubnodeOwnerAndWrap(namehash(`${name}.arb`), 'sub1', firstAddress, CAN_DO_EVERYTHING)).wait()
     await (await NameWrapper.setSubnodeOwnerAndWrap(namehash(`${name}.arb`), 'sub2', firstAddress, CAN_DO_EVERYTHING)).wait()

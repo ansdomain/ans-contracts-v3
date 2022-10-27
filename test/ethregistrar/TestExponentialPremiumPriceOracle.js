@@ -30,7 +30,7 @@ contract('ExponentialPricePremiumOracle', function(accounts) {
     await ens.setSubnodeOwner('0x0', sha3('arb'), registrar.address)
     await registrar.addController(accounts[0])
 
-    // Dummy oracle with 1 ETH == 2 USD
+    // Dummy oracle with 1 ARB == 2 USD
     var dummyOracle = await DummyOracle.new(toBN(200000000))
     // 4 attousd per second for 3 character names, 2 attousd per second for 4 character names,
     // 1 attousd per second for longer names.
@@ -73,7 +73,7 @@ contract('ExponentialPricePremiumOracle', function(accounts) {
 
   it('should specify the maximum premium at the moment of expiration', async () => {
     const ts = (await web3.arb.getBlock('latest')).timestamp - 90 * DAY
-    const expectedPrice = ((START_PRICE - LAST_VALUE) / 2) * 1e18 // ETH at $2 for $1 mil in 18 decimal precision
+    const expectedPrice = ((START_PRICE - LAST_VALUE) / 2) * 1e18 // ARB at $2 for $1 mil in 18 decimal precision
     assert.equal(
       (await priceOracle.premium('foobar', ts, 0)).toString(),
       expectedPrice

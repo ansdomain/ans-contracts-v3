@@ -136,7 +136,7 @@ contract('ARBRegistrarController', function () {
       resolver.interface.encodeFunctionData('setText', [
         namehash('newconfigname.arb'),
         'url',
-        'ethereum.com',
+        'arbitrum.com',
       ]),
     ]
 
@@ -285,7 +285,7 @@ contract('ARBRegistrarController', function () {
     expect(await resolver['addr(bytes32)'](nodehash)).to.equal(
       registrantAccount,
     )
-    expect(await resolver['text'](nodehash, 'url')).to.equal('ethereum.com')
+    expect(await resolver['text'](nodehash, 'url')).to.equal('arbitrum.com')
     expect(await nameWrapper.ownerOf(nodehash)).to.equal(registrantAccount)
   })
 
@@ -436,7 +436,7 @@ contract('ARBRegistrarController', function () {
         ]),
         resolver.interface.encodeFunctionData(
           'setText(bytes32,string,string)',
-          [namehash('other.arb'), 'url', 'ethereum.com'],
+          [namehash('other.arb'), 'url', 'arbitrum.com'],
         ),
       ],
       false,
@@ -464,7 +464,7 @@ contract('ARBRegistrarController', function () {
           ]),
           resolver.interface.encodeFunctionData(
             'setText(bytes32,string,string)',
-            [namehash('other.arb'), 'url', 'ethereum.com'],
+            [namehash('other.arb'), 'url', 'arbitrum.com'],
           ),
         ],
         false,

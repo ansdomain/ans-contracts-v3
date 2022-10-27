@@ -41,6 +41,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
   await deploy('ARBRegistrarController', deployArgs)
 
+  // console.log(registrar.address,
+  //   priceOracle.address,
+  //   60,
+  //   86400,
+  //   reverseRegistrar.address,
+  //   nameWrapper.address,);
+  
+
   const controller = await ethers.getContract('ARBRegistrarController', deployer)
   if (!controller.newlyDeployed) return
 
@@ -54,7 +62,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   // Only attempt to make controller etc changes directly on testnets
-  if (network.name === 'pulsechain') return
+  if (network.name === 'arbitrumGoerli') return
 
   console.log(
     'WRAPPER OWNER',
@@ -85,7 +93,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const resolver = await provider.getResolver('arb')
   if (resolver === null) {
     console.log(
-      'No resolver set for .arb; not setting interface for ETH Registrar Controller',
+      'No resolver set for .arb; not setting interface for ARB Registrar Controller',
     )
     return
   }

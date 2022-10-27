@@ -39,7 +39,7 @@ contract NameWrapper is
     mapping(bytes32 => bytes) public override names;
     string public constant name = "NameWrapper";
 
-    bytes32 private constant ETH_NODE =
+    bytes32 private constant ARB_NODE =
         0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
     bytes32 private constant ROOT_NODE =
         0x0000000000000000000000000000000000000000000000000000000000000000;
@@ -56,10 +56,10 @@ contract NameWrapper is
         registrar = _registrar;
         metadataService = _metadataService;
 
-        /* Burn PARENT_CANNOT_CONTROL and CANNOT_UNWRAP fuses for ROOT_NODE and ETH_NODE */
+        /* Burn PARENT_CANNOT_CONTROL and CANNOT_UNWRAP fuses for ROOT_NODE and ARB_NODE */
 
         _setData(
-            uint256(ETH_NODE),
+            uint256(ARB_NODE),
             address(0),
             uint32(PARENT_CANNOT_CONTROL | CANNOT_UNWRAP),
             MAX_EXPIRY
@@ -71,7 +71,7 @@ contract NameWrapper is
             MAX_EXPIRY
         );
         names[ROOT_NODE] = "\x00";
-        names[ETH_NODE] = "\x03eth\x00";
+        names[ARB_NODE] = "\x03arb\x00";
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -214,7 +214,7 @@ contract NameWrapper is
      * @return Normalised expiry of when the fuses expire
      */
 
-    function wrapETH2LD(
+    function wrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint32 fuses,
@@ -228,7 +228,7 @@ contract NameWrapper is
             !registrar.isApprovedForAll(registrant, msg.sender)
         ) {
             revert Unauthorised(
-                _makeNode(ETH_NODE, bytes32(tokenId)),
+                _makeNode(ARB_NODE, bytes32(tokenId)),
                 msg.sender
             );
         }
@@ -239,7 +239,7 @@ contract NameWrapper is
         // transfer the ans record back to the new owner (this contract)
         registrar.reclaim(tokenId, address(this));
 
-        return _wrapETH2LD(label, wrappedOwner, fuses, expiry, resolver);
+        return _wrapARB2LD(label, wrappedOwner, fuses, expiry, resolver);
     }
 
     /**
@@ -254,7 +254,7 @@ contract NameWrapper is
      * @return registrarExpiry The expiry date of the new name on the .arb registrar, in seconds since the Unix epoch.
      */
 
-    function registerAndWrapETH2LD(
+    function registerAndWrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint256 duration,
@@ -264,7 +264,7 @@ contract NameWrapper is
     ) external override onlyController returns (uint256 registrarExpiry) {
         uint256 tokenId = uint256(keccak256(bytes(label)));
         registrarExpiry = registrar.register(tokenId, address(this), duration);
-        _wrapETH2LD(label, wrappedOwner, fuses, expiry, resolver);
+        _wrapARB2LD(label, wrappedOwner, fuses, expiry, resolver);
     }
 
     /**
@@ -281,7 +281,7 @@ contract NameWrapper is
         uint32 fuses,
         uint64 expiry
     ) external override onlyController returns (uint256 expires) {
-        bytes32 node = _makeNode(ETH_NODE, bytes32(tokenId));
+        bytes32 node = _makeNode(ARB_NODE, bytes32(tokenId));
 
         expires = registrar.renew(tokenId, duration);
         if (isWrapped(node)) {
@@ -316,7 +316,7 @@ contract NameWrapper is
         bytes32 parentNode = name.namehash(offset);
         bytes32 node = _makeNode(parentNode, labelhash);
 
-        if (parentNode == ETH_NODE) {
+        if (parentNode == ARB_NODE) {
             revert IncompatibleParent();
         }
 
@@ -343,18 +343,18 @@ contract NameWrapper is
      * @param controller Sets the owner in the registry to this address
      */
 
-    function unwrapETH2LD(
+    function unwrapARB2LD(
         bytes32 labelhash,
         address registrant,
         address controller
-    ) public override onlyTokenOwner(_makeNode(ETH_NODE, labelhash)) {
+    ) public override onlyTokenOwner(_makeNode(ARB_NODE, labelhash)) {
         if (controller == address(0x0)) {
             revert IncorrectTargetOwner(controller);
         }
         if (registrant == address(this)) {
             revert IncorrectTargetOwner(registrant);
         }
-        _unwrap(_makeNode(ETH_NODE, labelhash), controller);
+        _unwrap(_makeNode(ARB_NODE, labelhash), controller);
         registrar.safeTransferFrom(
             address(this),
             registrant,
@@ -375,7 +375,7 @@ contract NameWrapper is
         bytes32 labelhash,
         address controller
     ) public override onlyTokenOwner(_makeNode(parentNode, labelhash)) {
-        if (parentNode == ETH_NODE) {
+        if (parentNode == ARB_NODE) {
             revert IncompatibleParent();
         }
         if (controller == address(0x0) || controller == address(this)) {
@@ -409,23 +409,23 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Upgrades a .arb wrapped domain by calling the wrapETH2LD function of the upgradeContract
+     * @notice Upgrades a .arb wrapped domain by calling the wrapARB2LD function of the upgradeContract
      *     and burning the token of this contract
      * @dev Can be called by the owner of the name in this contract
      * @param label Label as a string of the .arb name to upgrade
      * @param wrappedOwner The owner of the wrapped name
      */
 
-    function upgradeETH2LD(
+    function upgradeARB2LD(
         string calldata label,
         address wrappedOwner,
         address resolver
     ) public {
         bytes32 labelhash = keccak256(bytes(label));
-        bytes32 node = _makeNode(ETH_NODE, labelhash);
+        bytes32 node = _makeNode(ARB_NODE, labelhash);
         (uint32 fuses, uint64 expiry) = _prepareUpgrade(node);
 
-        upgradeContract.wrapETH2LD(
+        upgradeContract.wrapARB2LD(
             label,
             wrappedOwner,
             fuses,
@@ -486,7 +486,7 @@ contract NameWrapper is
         (, uint32 parentFuses, uint64 parentExpiry) = getData(
             uint256(parentNode)
         );
-        if (parentNode == ETH_NODE) {
+        if (parentNode == ARB_NODE) {
             if (!isTokenOwnerOrApproved(node, msg.sender)) {
                 revert Unauthorised(node, msg.sender);
             }
@@ -736,7 +736,7 @@ contract NameWrapper is
         uint256 tokenId,
         bytes calldata data
     ) public override returns (bytes4) {
-        //check if it's the eth registrar ERC721
+        //check if it's the arb registrar ERC721
         if (msg.sender != address(registrar)) {
             revert IncorrectTokenType();
         }
@@ -759,7 +759,7 @@ contract NameWrapper is
         // transfer the ans record back to the new owner (this contract)
         registrar.reclaim(uint256(labelhash), address(this));
 
-        _wrapETH2LD(label, owner, fuses, expiry, resolver);
+        _wrapARB2LD(label, owner, fuses, expiry, resolver);
 
         return IERC721Receiver(to).onERC721Received.selector;
     }
@@ -899,7 +899,7 @@ contract NameWrapper is
         }
     }
 
-    function _getETH2LDDataAndNormaliseExpiry(
+    function _getARB2LDDataAndNormaliseExpiry(
         bytes32 node,
         bytes32 labelhash,
         uint64 expiry
@@ -938,7 +938,7 @@ contract NameWrapper is
         return expiry;
     }
 
-    function _wrapETH2LD(
+    function _wrapARB2LD(
         string memory label,
         address wrappedOwner,
         uint32 fuses,
@@ -948,17 +948,17 @@ contract NameWrapper is
         // Mint a new ERC1155 token with fuses
         // Set PARENT_CANNOT_REPLACE to reflect wrapper + registrar control over the 2LD
         bytes32 labelhash = keccak256(bytes(label));
-        bytes32 node = _makeNode(ETH_NODE, labelhash);
+        bytes32 node = _makeNode(ARB_NODE, labelhash);
         uint32 oldFuses;
 
-        (, oldFuses, expiry) = _getETH2LDDataAndNormaliseExpiry(
+        (, oldFuses, expiry) = _getARB2LDDataAndNormaliseExpiry(
             node,
             labelhash,
             expiry
         );
 
         _addLabelAndWrap(
-            ETH_NODE,
+            ARB_NODE,
             node,
             label,
             wrappedOwner,

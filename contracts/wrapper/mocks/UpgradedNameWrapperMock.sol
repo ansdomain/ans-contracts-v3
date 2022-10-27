@@ -29,7 +29,7 @@ contract UpgradedNameWrapperMock {
         uint64 expiry
     );
 
-    event WrapETH2LD(
+    event WrapARB2LD(
         string label,
         address wrappedOwner,
         uint32 fuses,
@@ -37,7 +37,7 @@ contract UpgradedNameWrapperMock {
         address resolver
     );
 
-    function wrapETH2LD(
+    function wrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint32 fuses,
@@ -53,7 +53,7 @@ contract UpgradedNameWrapperMock {
                 registrar.isApprovedForAll(registrant, msg.sender),
             "Unauthorised"
         );
-        emit WrapETH2LD(label, wrappedOwner, fuses, expiry, resolver);
+        emit WrapARB2LD(label, wrappedOwner, fuses, expiry, resolver);
     }
 
     function setSubnodeRecord(

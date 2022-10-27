@@ -11,7 +11,7 @@ import "./IPriceOracle.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 contract BulkRenewal is IBulkRenewal {
-    bytes32 private constant ETH_NAMEHASH =
+    bytes32 private constant ARB_NAMEHASH =
         0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
 
     ANS public immutable ans;
@@ -21,11 +21,11 @@ contract BulkRenewal is IBulkRenewal {
     }
 
     function getController() internal view returns (ARBRegistrarController) {
-        Resolver r = Resolver(ans.resolver(ETH_NAMEHASH));
+        Resolver r = Resolver(ans.resolver(ARB_NAMEHASH));
         return
             ARBRegistrarController(
                 r.interfaceImplementer(
-                    ETH_NAMEHASH,
+                    ARB_NAMEHASH,
                     type(IARBRegistrarController).interfaceId
                 )
             );

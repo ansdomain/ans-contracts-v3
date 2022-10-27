@@ -42,7 +42,7 @@ interface INameWrapper is IERC1155 {
         address resolver
     ) external;
 
-    function wrapETH2LD(
+    function wrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint32 fuses,
@@ -50,7 +50,7 @@ interface INameWrapper is IERC1155 {
         address resolver
     ) external returns (uint64 expiry);
 
-    function registerAndWrapETH2LD(
+    function registerAndWrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint256 duration,
@@ -72,7 +72,7 @@ interface INameWrapper is IERC1155 {
         address owner
     ) external;
 
-    function unwrapETH2LD(
+    function unwrapARB2LD(
         bytes32 label,
         address newRegistrant,
         address newController

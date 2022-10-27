@@ -12,8 +12,8 @@ const sha3 = require('web3-utils').sha3
 const toBN = require('web3-utils').toBN
 const { exceptions } = require('../test-utils')
 
-const ETH_LABEL = sha3('arb')
-const ETH_NAMEHASH = namehash.hash('arb')
+const ARB_LABEL = sha3('arb')
+const ARB_NAMEHASH = namehash.hash('arb')
 
 contract('BulkRenewal', function(accounts) {
   let ens
@@ -81,13 +81,13 @@ contract('BulkRenewal', function(accounts) {
     // then transfer the .arb node to the base registrar.
     await ens.setSubnodeRecord(
       '0x0',
-      ETH_LABEL,
+      ARB_LABEL,
       ownerAccount,
       resolver.address,
       0
     )
-    await resolver.setInterface(ETH_NAMEHASH, '0xdf7ed181', controller.address)
-    await ens.setOwner(ETH_NAMEHASH, baseRegistrar.address)
+    await resolver.setInterface(ARB_NAMEHASH, '0xdf7ed181', controller.address)
+    await ens.setOwner(ARB_NAMEHASH, baseRegistrar.address)
 
     // Register some names
     for (const name of ['test1', 'test2', 'test3']) {

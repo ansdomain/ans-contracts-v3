@@ -87,13 +87,13 @@ contract StablePriceOracle is IPriceOracle {
     }
 
     function attoUSDToWei(uint256 amount) internal view returns (uint256) {
-        uint256 ethPrice = uint256(usdOracle.latestAnswer());
-        return (amount * 1e8) / ethPrice;
+        uint256 arbPrice = uint256(usdOracle.latestAnswer());
+        return (amount * 1e8) / arbPrice;
     }
 
     function weiToAttoUSD(uint256 amount) internal view returns (uint256) {
-        uint256 ethPrice = uint256(usdOracle.latestAnswer());
-        return (amount * ethPrice) / 1e8;
+        uint256 arbPrice = uint256(usdOracle.latestAnswer());
+        return (amount * arbPrice) / 1e8;
     }
 
     function supportsInterface(bytes4 interfaceID)

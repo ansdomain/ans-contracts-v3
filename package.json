@@ -7,7 +7,7 @@
     "test:local": "hardhat --network localhost test",
     "lint": "hardhat check",
     "deploy": "npx hardhat deploy --network arbitrumGoerli",
-    "verify": "npx hardhat verify --network arbitrumGoerli 0xcCb2AeA8e96B7107CE873dcF0c011F0927E49d0E",
+    "verify": "npx hardhat verify --constructor-args arguments.js --network arbitrumGoerli 0x5d8B78c65b4afdB0d8d5C30334b15c701513eB93",
     "build": "rm -rf ./build/deploy ./build/hardhat.config.js && hardhat compile && tsc",
     "prepublishOnly": "yarn build",
     "pub": "yarn publish --access public"

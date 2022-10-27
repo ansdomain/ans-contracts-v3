@@ -48,7 +48,7 @@ contract TestRRUtils {
   // Canonical ordering https://tools.ietf.org/html/rfc4034#section-6.1
   function testCompareNames() public pure {
     bytes memory bthLabXyz = hex'066274686c61620378797a00';
-    bytes memory ethLabXyz = hex'066574686c61620378797a00';
+    bytes memory arbLabXyz = hex'066574686c61620378797a00';
     bytes memory xyz = hex'0378797a00';
     bytes memory a_b_c  = hex'01610162016300';
     bytes memory b_b_c  = hex'01620162016300';
@@ -66,10 +66,10 @@ contract TestRRUtils {
     require(a_b_c.compareNames(b_a_c)  >  0, "the first label sorts later, but the first label sorts earlier");
     require(ab_c_d.compareNames(a_c_d) >  0, "two names where the first label on one is a prefix of the first label on the other");
     require(a_b_c.compareNames(b_b_c)  <  0, "two names where the first label on one is a prefix of the first label on the other");
-    require(xyz.compareNames(ethLabXyz) < 0, "xyz comes before ethLab.xyz");
-    require(bthLabXyz.compareNames(ethLabXyz) < 0, "bthLab.xyz comes before ethLab.xyz");
+    require(xyz.compareNames(arbLabXyz) < 0, "xyz comes before arbLab.xyz");
+    require(bthLabXyz.compareNames(arbLabXyz) < 0, "bthLab.xyz comes before arbLab.xyz");
     require(bthLabXyz.compareNames(bthLabXyz) == 0, "bthLab.xyz and bthLab.xyz are the same");
-    require(ethLabXyz.compareNames(bthLabXyz) >  0, "ethLab.xyz comes after bethLab.xyz");
+    require(arbLabXyz.compareNames(bthLabXyz) >  0, "arbLab.xyz comes after barbLab.xyz");
     require(bthLabXyz.compareNames(xyz)       >  0, "bthLab.xyz comes after xyz");
   }
 

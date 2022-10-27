@@ -1,4 +1,5 @@
 import { ethers } from 'hardhat'
+import namehash from 'eth-ens-namehash'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
@@ -23,6 +24,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
   }
   await deploy('PublicResolver', deployArgs)
+// console.log(registry.address,
+//   nameWrapper.address,
+//   controller.address,
+//   reverseRegistrar.address);
 
   const publicResolver = await ethers.getContract('PublicResolver')
   await deploy('PublicResolver', deployArgs)

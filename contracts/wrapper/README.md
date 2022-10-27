@@ -17,9 +17,9 @@ With the exception of the functionality to upgrade the metadata generation for t
 
 ## Wrapping a name
 
-`.arb` 2LDs (second-level domains) such as `example.arb` can be wrapped by calling `wrapETH2LD(label, wrappedOwner, fuses, expiry resolver)`. `label` is the first part of the domain name (eg, `'example'` for `example.arb`), `wrappedOwner` is the desired owner for the wrapped name, and `fuses` is a bitfield representing permissions over the name that should be irrevoacably burned (see 'Fuses' below). A `fuses` value of `0` represents no restrictions on the name. The resolver can also optionally be set here and would need to be a _wrapper aware_ resolver that uses the NameWrapper ownership over the Registry ownership.
+`.arb` 2LDs (second-level domains) such as `example.arb` can be wrapped by calling `wrapARB2LD(label, wrappedOwner, fuses, expiry resolver)`. `label` is the first part of the domain name (eg, `'example'` for `example.arb`), `wrappedOwner` is the desired owner for the wrapped name, and `fuses` is a bitfield representing permissions over the name that should be irrevoacably burned (see 'Fuses' below). A `fuses` value of `0` represents no restrictions on the name. The resolver can also optionally be set here and would need to be a _wrapper aware_ resolver that uses the NameWrapper ownership over the Registry ownership.
 
-In order to wrap a `.arb` 2LD, the owner of the name must have authorised the wrapper by calling `setApprovalForAll` on the registrar, and the caller of `wrapETH2LD` must be either the owner, or authorised by the owner on either the wrapper or the registrar.
+In order to wrap a `.arb` 2LD, the owner of the name must have authorised the wrapper by calling `setApprovalForAll` on the registrar, and the caller of `wrapARB2LD` must be either the owner, or authorised by the owner on either the wrapper or the registrar.
 
 All other domains (non `.arb` names as well as `.arb` subdomains such as `sub.example.arb` can be wrapped by calling `wrap(dnsEncodedName, wrappedOwner, resolver)`. `parentNode` is the namehash of the name one level higher than the name to be wrapped, `dnsEncodedName` is the full [DNS encoded name](http://www.tcpipguide.com/free/t_DNSNameNotationandMessageCompressionTechnique.htm#:~:text=Instead%2C%20DNS%20uses%20a%20special,are%20encoded%2C%20one%20per%20byte.), `wrappedOwner` is the address that should own the wrapped name. To wrap `sub.example.arb`, you should call `wrap(encodeDNSName('sub.example.arb'), owner, resolver)`. 
 
@@ -43,7 +43,7 @@ abiCoder.encode(
 
 ## Unwrapping a name
 
-Wrapped names can be unwrapped by calling either `unwrapETH2LD(labelHash, newRegistrant, newController)` or `unwrap(parentNode, label, newController)` as appropriate. `label` and `parentNode` have meanings as described under "Wrapping a name", while `newRegistrant` is the address that should own the .arb registrar token, and `newController` is the address that should be set as the owner of the ENS registry record.
+Wrapped names can be unwrapped by calling either `unwrapARB2LD(labelHash, newRegistrant, newController)` or `unwrap(parentNode, label, newController)` as appropriate. `label` and `parentNode` have meanings as described under "Wrapping a name", while `newRegistrant` is the address that should own the .arb registrar token, and `newController` is the address that should be set as the owner of the ENS registry record.
 
 ## Working with wrapped names
 
@@ -72,7 +72,7 @@ Each fuse is represented by a single bit. If that bit is cleared (0) the restric
 
 ### CANNOT_UNWRAP = 1
 
-If this fuse is burned, the name cannot be unwrapped, and calls to `unwrap` and `unwrapETH2LD` will fail.
+If this fuse is burned, the name cannot be unwrapped, and calls to `unwrap` and `unwrapARB2LD` will fail.
 
 ### CANNOT_BURN_FUSES = 2
 
@@ -146,7 +146,7 @@ cp .env.org .env
 
 ```
 PRIVATE_KEY=
-ETHERSCAN_API_KEY=
+ARBERSCAN_API_KEY=
 INFURA_API_KEY=
 ```
 
@@ -212,9 +212,9 @@ Wrapped NFT for sub2.wrappertest4.arb is available at https://testnets.opensea.i
 
 ## Notes on upgrading the Name Wrapper
 
-The Name Wrapper has a built-in upgrade function that allows the owner of the Name Wrapper to set a new contract for all names to be migrated to as a last resort migration. Upgrading a name is optional and is only able to be done by the owner of the name in the original NameWrapper. A name can only be migrated when the parent has been migrated to the new registrar. By default the `ROOT_NODE` and `ETH_NODE` should be wrapped in the constructor of the new Name Wrapper.
+The Name Wrapper has a built-in upgrade function that allows the owner of the Name Wrapper to set a new contract for all names to be migrated to as a last resort migration. Upgrading a name is optional and is only able to be done by the owner of the name in the original NameWrapper. A name can only be migrated when the parent has been migrated to the new registrar. By default the `ROOT_NODE` and `ARB_NODE` should be wrapped in the constructor of the new Name Wrapper.
 
-The upgraded namewrapper must include the interface `INameWrapperUpgrade.sol`, which mandates two functions that already exist in the new wrapper: `wrapETH2LD` and `setSubnodeRecord`. The `wrapETH2LD` function can be used as-is, however the `setSubnodeRecord` needs one additional permission, which checks for if the parent of the name you are wrapping has already been wrapped and the `msg.sender` is the old wrapper.
+The upgraded namewrapper must include the interface `INameWrapperUpgrade.sol`, which mandates two functions that already exist in the new wrapper: `wrapARB2LD` and `setSubnodeRecord`. The `wrapARB2LD` function can be used as-is, however the `setSubnodeRecord` needs one additional permission, which checks for if the parent of the name you are wrapping has already been wrapped and the `msg.sender` is the old wrapper.
 
 ```solidity
 // Example of that check in solidity

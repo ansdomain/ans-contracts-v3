@@ -12,7 +12,7 @@ interface INameWrapperUpgrade {
         uint64 expiry
     ) external;
 
-    function wrapETH2LD(
+    function wrapARB2LD(
         string calldata label,
         address wrappedOwner,
         uint32 fuses,

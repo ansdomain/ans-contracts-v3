@@ -40,6 +40,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   const nameWrapper = await deploy('NameWrapper', deployArgs)
+  
+  console.log(registry.address, registrar.address, metadata.address);
+  
   if (!nameWrapper.newlyDeployed) return
 
   if (owner !== deployer) {

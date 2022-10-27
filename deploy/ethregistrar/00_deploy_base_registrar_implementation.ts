@@ -21,7 +21,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     args: [registry.address, namehash.hash('arb')],
     log: true,
   };
-
+  
   const bri = await deploy('BaseRegistrarImplementation', deployArgs)
   if(!bri.newlyDeployed) return;
 
