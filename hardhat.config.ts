@@ -168,7 +168,7 @@ const config: HardhatUserConfig = {
       url: 'https://goerli-rollup.arbitrum.io/rpc',
       chainId: 421613,
       accounts: {
-        mnemonic: "bind exact struggle mushroom danger shove note rent glance alone learn wagon"
+        mnemonic: " "
       },
       gasPrice:4000000000,
       gas: 27000000,
@@ -221,7 +221,7 @@ const config: HardhatUserConfig = {
     ],
   },
   etherscan: {
-    apiKey: "ZXR4AG3JVMGXJ4DCC2A2YQJQDZD1U6XWJR",
+    apiKey: " ",
     customChains: [
       {
         network: "arbitrumGoerli",
